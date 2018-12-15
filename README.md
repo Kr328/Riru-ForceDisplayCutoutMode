@@ -17,7 +17,7 @@ A module of [Riru]. (https://github.com/RikkaApps/Riru). Override activity displ
 
   1.Install JDK ,Gradle ,Android SDK ,Android NDK
 
-  2.Configure with your environment [local.properties](https://github.com/Kr328/RiruModuleTemplate/blob/master/local.properties)
+  2.Configure with your environment [local.properties](https://github.com/Kr328/Riru-ForceDisplayCutoutMode/blob/master/local.properties)
 
   3.Run command 
 
