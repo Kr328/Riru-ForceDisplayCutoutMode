@@ -42,7 +42,7 @@ dex {
 }
 
 magisk {
-    output file("$buildDir/outputs/magisk-module.zip")
+    output file("$buildDir/outputs/riru-force-display-cutout-mode.zip")
     
     map file("$buildDir/outputs/dex/") ,"system/framework/"
     map file("$buildDir/outputs/cmake/armeabi-v7a/shared") ,"system/lib"
@@ -51,7 +51,7 @@ magisk {
 }
 
 signature {
-    targetFile file("$buildDir/outputs/magisk-module.zip")
+    targetFile file("$buildDir/outputs/riru-force-display-cutout-mode.zip")
     buildToolsVersion "28.0.3"
     
     keyStore file("release.keystore")
@@ -63,6 +63,7 @@ signature {
 task cleanAll(type: Delete) {
     delete "build" ,"out"
     delete PathUtils.toLocalSeparator("buildSrc/build") ,PathUtils.toLocalSeparator("buildSrc/out")
+    delete PathUtils.toLocalSeparator("classpath/build") ,PathUtils.toLocalSeparator("classpath/out")
 }
 
 dependencies {
