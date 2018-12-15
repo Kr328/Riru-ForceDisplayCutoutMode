@@ -1,6 +1,6 @@
 # Riru-ForceDisplayCutoutMode
 
-A module of [Riru]. (https://github.com/RikkaApps/Riru). Override activity display cutout mode.
+A module of [Riru](https://github.com/RikkaApps/Riru). Override activity display cutout mode.
 
 ## Requirements
 
