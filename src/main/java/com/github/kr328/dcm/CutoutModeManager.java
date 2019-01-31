@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Color;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.Log;
@@ -16,6 +18,8 @@ import java.util.List;
 
 public class CutoutModeManager extends TaskStackListener {
     CutoutModeManager() {
+        long token = Binder.clearCallingIdentity();
+
         this.context = ActivityThread.currentActivityThread().getSystemContext();
         this.uiContext = ActivityThread.currentActivityThread().getSystemUiContext();
         this.notificationManager = uiContext.getSystemService(NotificationManager.class);
@@ -24,6 +28,8 @@ public class CutoutModeManager extends TaskStackListener {
 
         createNotificationChannel();
         registerListeners();
+
+        Binder.restoreCallingIdentity(token);
     }
 
     int notePackageCutout(String packageName, int defaultValue) {
@@ -42,17 +48,22 @@ public class CutoutModeManager extends TaskStackListener {
         }
 
         String packageName = tasks.get(0).topActivity.getPackageName();
+        Bundle extras = new Bundle();
+
+        extras.putString("android.substName" ,"CutoutMode");
 
         notificationManager.notify(Global.NOTIFICATION_ID ,new Notification.Builder(uiContext,Global.NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(loadApplicationLabel(packageName))
                 .setSmallIcon(android.R.drawable.star_on)
+                .setColor(0x004D40)
                 .setContentText(Utils.cutoutModeIntToString(storage.get(packageName
                         ,WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT)))
-                .setSubText("CutoutMode")
+                //.setSubText("CutoutMode")
                 .setOngoing(true)
                 .setContentIntent(PendingIntent.getBroadcast(context ,Global.BROADCAST_ID
                         ,new Intent(Global.INTENT_ACTION_CHANGE).putExtra("package" ,packageName)
                         ,PendingIntent.FLAG_UPDATE_CURRENT))
+                .addExtras(extras)
                 .build());
 
         Binder.restoreCallingIdentity(token);
@@ -136,6 +147,20 @@ public class CutoutModeManager extends TaskStackListener {
         }
     }
 
+    static {
+        int resId = android.R.drawable.star_on;
+
+        try {
+            Class<?> clazz = Class.forName("com.android.internal.R.drawable");
+            resId = clazz.getDeclaredField("stat_sys_adb").getInt(null);
+        } catch (Exception e) {
+            Log.w(Global.TAG ,"Icon resource not found.");
+        }
+
+        NOTIFICATION_ICON_ID = resId;
+    }
+
+    private static final int NOTIFICATION_ICON_ID;
     private Context uiContext;
     private Context context;
     private NotificationManager notificationManager;
