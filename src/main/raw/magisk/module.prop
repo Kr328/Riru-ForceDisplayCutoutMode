@@ -1,7 +1,7 @@
 id=riru_display_cutout_mode
 name=Riru - DisplayCutoutMode
-version=v2
-versionCode=2
+version=v3
+versionCode=3
 author=Kr328
 description=Riru module to override activity display cutout mode.
 minMagisk=17000
