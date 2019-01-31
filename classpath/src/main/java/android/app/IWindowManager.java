@@ -5,7 +5,7 @@ import android.os.IBinder;
 import android.os.IInterface;
 
 public interface IWindowManager extends IInterface {
-    public static class Stub extends Binder implements IActivityManager {
+    public static class Stub extends Binder implements IWindowManager {
         public static IWindowManager asInterface(IBinder binder) {
             throw new IllegalArgumentException("Unsupported");
         }

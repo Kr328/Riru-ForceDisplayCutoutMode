@@ -121,6 +121,7 @@ check_architecture() {
 config_riru_module() {
     ui_print "- Config Riru Module"
 
-    mkdir -p /data/misc/riru/modules/${RIRU_MODULE_NAME}/blacklist/
+    mkdir -p /data/misc/riru/modules/${RIRU_MODULE_NAME}/
+    chown -R system:system /data/misc/riru/modules/${RIRU_MODULE_NAME}/
     cp $MODPATH/module.prop /data/misc/riru/modules/${RIRU_MODULE_NAME}/module.prop
 }

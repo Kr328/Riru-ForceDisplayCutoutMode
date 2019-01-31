@@ -1,5 +1,6 @@
 package com.github.kr328.dcm;
 
+import android.app.ActivityThread;
 import android.os.IBinder;
 import android.os.IServiceManager;
 import android.os.ServiceManager;
@@ -72,25 +73,24 @@ public class Injector {
         return method.invoke(original ,args);
     }
 
-    private static synchronized void onAdjustWindowParamsLwCalled(Object windowState , WindowManager.LayoutParams layoutParams) throws Throwable {
-        if ( windowStateGetPackageName == null ) {
-            windowStateGetPackageName = windowState.getClass().getDeclaredMethod("getOwningPackage");
-            windowStateGetPackageName.setAccessible(true);
-        }
+    private static void onAdjustWindowParamsLwCalled(Object windowState , WindowManager.LayoutParams layoutParams) throws Throwable {
+        synchronized (Injector.class) {
+            if ( windowStateGetPackageName == null ) {
+                windowStateGetPackageName = windowState.getClass().getDeclaredMethod("getOwningPackage");
+                windowStateGetPackageName.setAccessible(true);
+            }
 
-        if ( layoutParams.layoutInDisplayCutoutMode != WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT )
-            return;
+            if ( cutoutModeManager == null ) {
+                cutoutModeManager = new CutoutModeManager();
+            }
+        }
 
         String packageName = windowStateGetPackageName.invoke(windowState).toString();
 
-        if ( new File(Global.BLACKLIST_PATH , packageName).exists() ) {
-            Log.i(Global.TAG ,"Ignore blacklist " + packageName);
-            return;
-        }
-
-        layoutParams.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-        Log.i(Global.TAG ,"Apply to " + packageName);
+        layoutParams.layoutInDisplayCutoutMode = cutoutModeManager.notePackageCutout(packageName
+                ,layoutParams.layoutInDisplayCutoutMode);
     }
 
     private static Method windowStateGetPackageName;
+    private static CutoutModeManager cutoutModeManager;
 }
